@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xeokit BIM Loader</title>
+    <style>
+        /* 设置 3D 视图的容器大小 */
+        #myViewer {
+            width: 100%;
+            height: 100vh; /* 视图占满整个窗口 */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@xeokit/xeokit-sdk/dist/xeokit-sdk.min.js"></script>
+</head>
+<body>
+    <!-- 3D Viewer 容器 -->
+    <div id="myViewer"></div>
+
+    <script>
+        // 创建一个 Viewer 实例，将其渲染到 "myViewer" 容器中
+        const viewer = new xeokit.Viewer({
+            canvasId: "myViewer" // 3D 视图的容器 ID
+        });
+
+        // 配置相机，设置默认视角
+        viewer.camera.eye = [30, 30, 30];   // 相机位置
+        viewer.camera.look = [0, 0, 0];     // 相机的观察点
+        viewer.camera.up = [0, 1, 0];       // 相机的上方向
+
+        // 使用 IFCLoader 加载 IFC 模型
+        const ifcLoader = new xeokit.IFCLoader({
+            viewer: viewer
+        });
+
+        // 加载 IFC 文件
+        ifcLoader.load({
+            src: "./models/yourModel.ifc",  // 替换为你 IFC 文件的路径
+
+            success: function (model) {
+                console.log("模型加载成功", model);
+                viewer.cameraFlight.jumpTo(model);  // 相机飞到模型的位置
+            },
+
+            error: function (errMsg) {
+                console.error("模型加载失败", errMsg);
+            }
+        });
+    </script>
+</body>
+</html>
